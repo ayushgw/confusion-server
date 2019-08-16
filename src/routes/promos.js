@@ -1,11 +1,7 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const router = new express.Router();
 
-const promoRouter = express.Router();
-
-promoRouter.use(bodyParser.json());
-
-promoRouter.route('/')
+router.route('/')
     .all((req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
@@ -25,7 +21,7 @@ promoRouter.route('/')
         res.end('Deleting all the promos!');
     });
 
-promoRouter.route('/:promoId')
+router.route('/:promoId')
     .all((req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
@@ -47,4 +43,4 @@ promoRouter.route('/:promoId')
     });
 
 
-module.exports = promoRouter;
+module.exports = router;
