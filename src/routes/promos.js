@@ -1,45 +1,95 @@
 const express = require('express');
+const Promo = require('../models/promo')
+
 const router = new express.Router();
 
-router.route('/')
-    .all((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        next();
+router.route('/promos')
+
+    .get(async (req, res) => {
+        try {
+            const dishes = await Promo.find({})
+            res.send(dishes);
+        } catch (e) {
+            res.status(500).send(e)
+        }
     })
-    .get((req, res, next) => {
-        res.end('Will send all the promos to you!');
+
+    .post(async (req, res) => {
+        const dish = new Promo(req.body)
+        try {
+            await dish.save()
+            res.status(201).send(dish)
+        } catch (e) {
+            res.status(400).send(e)
+        }
     })
-    .post((req, res, next) => {
-        res.end('Will add the promo: ' + req.body.name + ' with details: ' + req.body.description);
+
+    .patch((req, res) => {
+        res.status(405).send();
     })
-    .put((req, res, next) => {
-        res.statusCode = 403;
-        res.end('PUT method not supported on /promos');
-    })
-    .delete((req, res, next) => {
-        res.end('Deleting all the promos!');
+
+    .delete(async (req, res) => {
+        try {
+            await Promo.deleteMany()
+            res.send('Removed all the dishes!')
+        } catch (e) {
+            res.status(500).send(e)
+        }
     });
 
-router.route('/:promoId')
-    .all((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        next();
+router.route('/promos/:id')
+
+    .get(async (req, res) => {
+        try {
+            const dish = await Promo.findById(req.params.id)
+
+            if (!dish) {
+                throw new Error()
+            }
+
+            res.send(dish)
+        } catch (e) {
+            res.status(404).send()
+        }
     })
-    .get((req, res, next) => {
-        res.end('Will send details of the promo: ' + req.params.promoId);
+
+    .post((req, res) => {
+        res.status(405).send()
     })
-    .post((req, res, next) => {
-        res.statusCode = 403;
-        res.end('POST operation not supported on /promos/ ' + req.params.promoId);
+
+    .patch(async (req, res) => {
+        const updates = Object.keys(req.body)
+        const allowedUpdates = ['name', 'description', 'image', 'category', 'label', 'price', 'featured']
+        const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
+
+        if (!isValidUpdate) {
+            res.status(400).send({ error: 'Invalid dish fields!' })
+        }
+
+        try {
+            const dish = await Promo.findById(req.params.id)
+            updates.forEach(update => dish[update] = req.body[update])
+            await dish.save()
+
+            res.send(dish)
+        } catch (e) {
+            res.status(400).send(e)
+        }
     })
-    .put((req, res, next) => {
-        res.write('Updating the promo: ' + req.params.promoId);
-        res.end('Will update the promo: ' + req.body.name + ' with details ' + req.body.description);
-    })
-    .delete((req, res, next) => {
-        res.end('Deleting promo: ' + req.params.promoId);
+
+    .delete(async (req, res) => {
+        try {
+            const dish = await Promo.findById(req.params.id)
+
+            if (!dish) {
+                res.status(404).send()
+            }
+
+            await dish.remove()
+            res.send(dish)
+        } catch (e) {
+            res.status(500).send(e)
+        }
     });
 
 

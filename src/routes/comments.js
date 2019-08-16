@@ -28,7 +28,7 @@ router.route('/dishes/:dish_id/comments')
         }
     })
 
-router.route('/comments/:comment_id')
+router.route('/comment/:comment_id')
 
     .patch(async (req, res) => {
         const updates = Object.keys(req.body)

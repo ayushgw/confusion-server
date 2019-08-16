@@ -9,11 +9,13 @@ const commentSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     author: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     dish_id: {
         type: mongoose.Schema.Types.ObjectId,
