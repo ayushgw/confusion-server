@@ -27,6 +27,8 @@ const promoSchema = mongoose.Schema({
         required: true,
         min: 0
     }
+}, {
+    timestamps: true
 })
 
 const Promo = mongoose.model('Promo', promoSchema)

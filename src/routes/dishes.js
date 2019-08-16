@@ -63,7 +63,7 @@ router.route('/dishes/:id')
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
 
         if (!isValidUpdate) {
-            res.status(400).send({ error: 'Invalid dish fields!' })
+            return res.status(400).send({ error: 'Invalid dish fields!' })
         }
 
         try {

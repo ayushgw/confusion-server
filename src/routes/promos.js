@@ -7,18 +7,18 @@ router.route('/promos')
 
     .get(async (req, res) => {
         try {
-            const dishes = await Promo.find({})
-            res.send(dishes);
+            const promos = await Promo.find({})
+            res.send(promos);
         } catch (e) {
             res.status(500).send(e)
         }
     })
 
     .post(async (req, res) => {
-        const dish = new Promo(req.body)
+        const promo = new Promo(req.body)
         try {
-            await dish.save()
-            res.status(201).send(dish)
+            await promo.save()
+            res.status(201).send(promo)
         } catch (e) {
             res.status(400).send(e)
         }
@@ -31,7 +31,7 @@ router.route('/promos')
     .delete(async (req, res) => {
         try {
             await Promo.deleteMany()
-            res.send('Removed all the dishes!')
+            res.send('Removed all the promos!')
         } catch (e) {
             res.status(500).send(e)
         }
@@ -41,13 +41,13 @@ router.route('/promos/:id')
 
     .get(async (req, res) => {
         try {
-            const dish = await Promo.findById(req.params.id)
+            const promo = await Promo.findById(req.params.id)
 
-            if (!dish) {
+            if (!promo) {
                 throw new Error()
             }
 
-            res.send(dish)
+            res.send(promo)
         } catch (e) {
             res.status(404).send()
         }
@@ -59,19 +59,19 @@ router.route('/promos/:id')
 
     .patch(async (req, res) => {
         const updates = Object.keys(req.body)
-        const allowedUpdates = ['name', 'description', 'image', 'category', 'label', 'price', 'featured']
+        const allowedUpdates = ['name', 'description', 'image', 'label', 'price']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
 
         if (!isValidUpdate) {
-            res.status(400).send({ error: 'Invalid dish fields!' })
+            return res.status(400).send({ error: 'Invalid promo fields!' })
         }
 
         try {
-            const dish = await Promo.findById(req.params.id)
-            updates.forEach(update => dish[update] = req.body[update])
-            await dish.save()
+            const promo = await Promo.findById(req.params.id)
+            updates.forEach(update => promo[update] = req.body[update])
+            await promo.save()
 
-            res.send(dish)
+            res.send(promo)
         } catch (e) {
             res.status(400).send(e)
         }
@@ -79,14 +79,14 @@ router.route('/promos/:id')
 
     .delete(async (req, res) => {
         try {
-            const dish = await Promo.findById(req.params.id)
+            const promo = await Promo.findById(req.params.id)
 
-            if (!dish) {
+            if (!promo) {
                 res.status(404).send()
             }
 
-            await dish.remove()
-            res.send(dish)
+            await promo.remove()
+            res.send(promo)
         } catch (e) {
             res.status(500).send(e)
         }

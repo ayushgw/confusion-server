@@ -1,45 +1,95 @@
 const express = require('express');
+const Leader = require('../models/leader')
+
 const router = new express.Router();
 
-router.route('/')
-    .all((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        next();
+router.route('/leaders')
+
+    .get(async (req, res) => {
+        try {
+            const leaders = await Leader.find({})
+            res.send(leaders);
+        } catch (e) {
+            res.status(500).send(e)
+        }
     })
-    .get((req, res, next) => {
-        res.end('Will send all the leaders to you!');
+
+    .post(async (req, res) => {
+        const leader = new Leader(req.body)
+        try {
+            await leader.save()
+            res.status(201).send(leader)
+        } catch (e) {
+            res.status(400).send(e)
+        }
     })
-    .post((req, res, next) => {
-        res.end('Will add the leader: ' + req.body.name + ' with details: ' + req.body.description);
+
+    .patch((req, res) => {
+        res.status(405).send();
     })
-    .put((req, res, next) => {
-        res.statusCode = 403;
-        res.end('PUT method not supported on /leaders');
-    })
-    .delete((req, res, next) => {
-        res.end('Deleting all the leaders!');
+
+    .delete(async (req, res) => {
+        try {
+            await Leader.deleteMany()
+            res.send('Removed all the leaders!')
+        } catch (e) {
+            res.status(500).send(e)
+        }
     });
 
-router.route('/:leaderId')
-    .all((req, res, next) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain');
-        next();
+router.route('/leaders/:id')
+
+    .get(async (req, res) => {
+        try {
+            const leader = await Leader.findById(req.params.id)
+
+            if (!leader) {
+                throw new Error()
+            }
+
+            res.send(leader)
+        } catch (e) {
+            res.status(404).send()
+        }
     })
-    .get((req, res, next) => {
-        res.end('Will send details of the leader: ' + req.params.leaderId);
+
+    .post((req, res) => {
+        res.status(405).send()
     })
-    .post((req, res, next) => {
-        res.statusCode = 403;
-        res.end('POST operation not supported on /leaders/ ' + req.params.leaderId);
+
+    .patch(async (req, res) => {
+        const updates = Object.keys(req.body)
+        const allowedUpdates = ['name', 'description', 'image', 'designation', 'abbr']
+        const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
+
+        if (!isValidUpdate) {
+            res.status(400).send({ error: 'Invalid leader fields!' })
+        }
+
+        try {
+            const leader = await Leader.findById(req.params.id)
+            updates.forEach(update => leader[update] = req.body[update])
+            await leader.save()
+
+            res.send(leader)
+        } catch (e) {
+            res.status(400).send(e)
+        }
     })
-    .put((req, res, next) => {
-        res.write('Updating the leader: ' + req.params.leaderId);
-        res.end('Will update the leader: ' + req.body.name + ' with details ' + req.body.description);
-    })
-    .delete((req, res, next) => {
-        res.end('Deleting leader: ' + req.params.leaderId);
+
+    .delete(async (req, res) => {
+        try {
+            const leader = await Leader.findById(req.params.id)
+
+            if (!leader) {
+                res.status(404).send()
+            }
+
+            await leader.remove()
+            res.send(leader)
+        } catch (e) {
+            res.status(500).send(e)
+        }
     });
 
 
