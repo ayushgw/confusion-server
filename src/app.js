@@ -8,6 +8,7 @@ require('./db/mongoose')
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/users');
 const dishRouter = require('./routes/dishes');
+const commentRouter = require('./routes/comments');
 const promoRouter = require('./routes/promos');
 const leaderRouter = require('./routes/leaders');
 
@@ -25,11 +26,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(publicDirectoryPath));
 
-app.use('/', indexRouter);
-app.use('/users', userRouter);
-app.use('/dishes', dishRouter);
-app.use('/promotions', promoRouter);
-app.use('/leaders', leaderRouter);
+app.use('/', indexRouter)
+// app.use(userRouter)
+app.use(dishRouter)
+app.use(commentRouter)
+// app.use(promoRouter)
+// app.use(leaderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
