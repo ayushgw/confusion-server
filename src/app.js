@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(publicDirectoryPath));
 
-app.use('/', indexRouter)
+app.use(indexRouter)
 app.use(userRouter)
 app.use(dishRouter)
 app.use(commentRouter)
