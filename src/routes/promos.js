@@ -1,5 +1,6 @@
 const express = require('express');
 const Promo = require('../models/promo')
+const auth = require('../middleware/auth')
 
 const router = new express.Router();
 
@@ -14,7 +15,7 @@ router.route('/promos')
         }
     })
 
-    .post(async (req, res) => {
+    .post(auth, async (req, res) => {
         const promo = new Promo(req.body)
         try {
             await promo.save()
@@ -28,7 +29,7 @@ router.route('/promos')
         res.status(405).send();
     })
 
-    .delete(async (req, res) => {
+    .delete(auth, async (req, res) => {
         try {
             await Promo.deleteMany()
             res.send('Removed all the promos!')
@@ -57,7 +58,7 @@ router.route('/promos/:id')
         res.status(405).send()
     })
 
-    .patch(async (req, res) => {
+    .patch(auth, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'label', 'price']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -82,7 +83,7 @@ router.route('/promos/:id')
         }
     })
 
-    .delete(async (req, res) => {
+    .delete(auth, async (req, res) => {
         try {
             const promo = await Promo.findById(req.params.id)
 

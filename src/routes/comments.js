@@ -1,5 +1,6 @@
 const express = require('express')
 const Comment = require('../models/comment')
+const auth = require('../middleware/auth')
 
 const router = new express.Router()
 
@@ -14,7 +15,7 @@ router.route('/dishes/:dish_id/comments')
         }
     })
 
-    .post(async (req, res) => {
+    .post(auth, async (req, res) => {
         const comment = new Comment({
             ...req.body,
             dish_id: req.params.dish_id
@@ -28,9 +29,9 @@ router.route('/dishes/:dish_id/comments')
         }
     })
 
-router.route('/comment/:comment_id')
+router.route('/comments/:comment_id')
 
-    .patch(async (req, res) => {
+    .patch(auth, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['rating', 'comment', 'author']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -55,7 +56,7 @@ router.route('/comment/:comment_id')
         }
     })
 
-    .delete(async (req, res) => {
+    .delete(auth, async (req, res) => {
         try {
             const comment = await Comment.findById(req.params.comment_id)
 
@@ -63,6 +64,7 @@ router.route('/comment/:comment_id')
                 res.status(404).send()
             }
 
+            await comment.remove()
             res.send(comment)
         } catch (e) {
             res.status(500).send(e)

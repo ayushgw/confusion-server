@@ -51,7 +51,16 @@ const userSchema = mongoose.Schema({
         timestamps: true
     })
 
+// Remove sensitve data
+userSchema.methods.toJSON = function() {
+    const user = this
+    const userObject = user.toObject()
 
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
     
 // Generate Auth token using JWT
 userSchema.methods.generateAuthToken = async function() {
@@ -65,7 +74,7 @@ userSchema.methods.generateAuthToken = async function() {
 }
 
 // To verify login password
-userSchema.methods.findByCredentials = async function(email, password) {
+userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 
     if(!user) {
