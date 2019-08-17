@@ -8,7 +8,7 @@ router.route('/dishes/:dish_id/comments')
 
     .get(async (req, res) => {
         try {
-            const comments = await Comment.find({ dish_id: req.params.dish_id })
+            const comments = await Comment.find({ dish_id: req.params.dish_id }).populate('author', 'name')
             res.send(comments)
         } catch (e) {
             res.status(500).send(e)
@@ -18,7 +18,8 @@ router.route('/dishes/:dish_id/comments')
     .post(auth, async (req, res) => {
         const comment = new Comment({
             ...req.body,
-            dish_id: req.params.dish_id
+            dish_id: req.params.dish_id,
+            author: req.user._id
         })
 
         try {
@@ -33,15 +34,15 @@ router.route('/comments/:comment_id')
 
     .patch(auth, async (req, res) => {
         const updates = Object.keys(req.body)
-        const allowedUpdates = ['rating', 'comment', 'author']
+        const allowedUpdates = ['rating', 'comment']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
 
         if (!isValidUpdate) {
-            return res.status(400).send({ error: 'Invalid comment fields!' })
+            return res.status(400).send({ error: 'Invalid update fields!' })
         }
 
         try {
-            const comment = await Comment.findById(req.params.comment_id)
+            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id })
 
             if (!comment) {
                 return res.status(404).send()
@@ -58,7 +59,7 @@ router.route('/comments/:comment_id')
 
     .delete(auth, async (req, res) => {
         try {
-            const comment = await Comment.findById(req.params.comment_id)
+            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id })
 
             if(!comment) {
                 res.status(404).send()

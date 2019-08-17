@@ -13,9 +13,9 @@ const commentSchema = new mongoose.Schema({
         trim: true
     },
     author: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        trim: true
+        ref: 'User'
     },
     dish_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -25,6 +25,22 @@ const commentSchema = new mongoose.Schema({
 }, {
         timestamps: true
     })
+
+// Remove data
+commentSchema.methods.toJSON = function () {
+    const comment = this
+    const commentObject = comment.toObject()
+
+    if (commentObject.author.name) {
+        commentObject.author = commentObject.author.name
+    } else {
+        delete commentObject.author
+    }
+
+    delete commentObject.dish_id
+
+    return commentObject
+}
 
 const Comment = mongoose.model('Comment', commentSchema)
 
