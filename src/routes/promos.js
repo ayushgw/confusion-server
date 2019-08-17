@@ -68,6 +68,11 @@ router.route('/promos/:id')
 
         try {
             const promo = await Promo.findById(req.params.id)
+
+            if(!promo) {
+                return res.status(404).send()
+            }
+            
             updates.forEach(update => promo[update] = req.body[update])
             await promo.save()
 

@@ -63,11 +63,16 @@ router.route('/leaders/:id')
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
 
         if (!isValidUpdate) {
-            res.status(400).send({ error: 'Invalid leader fields!' })
+            return res.status(400).send({ error: 'Invalid leader fields!' })
         }
 
         try {
             const leader = await Leader.findById(req.params.id)
+
+            if(!leader) {
+                return res.status(404).send()
+            }
+
             updates.forEach(update => leader[update] = req.body[update])
             await leader.save()
 

@@ -36,14 +36,14 @@ router.route('/comment/:comment_id')
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
 
         if (!isValidUpdate) {
-            res.status(400).send({ error: 'Invalid comment fields!' })
+            return res.status(400).send({ error: 'Invalid comment fields!' })
         }
 
         try {
             const comment = await Comment.findById(req.params.comment_id)
 
             if (!comment) {
-                res.status(404).send()
+                return res.status(404).send()
             }
 
             updates.forEach(update => comment[update] = req.body[update])
