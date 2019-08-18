@@ -24,7 +24,8 @@ router.route('/dishes/:dish_id/comments')
 
         try {
             await comment.save()
-            res.status(201).send(comment)
+            const retComment = await Comment.findById(comment._id).populate('author', 'name')
+            res.status(201).send(retComment)
         } catch (e) {
             res.status(400).send(e)
         }
@@ -42,7 +43,7 @@ router.route('/comments/:comment_id')
         }
 
         try {
-            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id })
+            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id }).populate('author', 'name')
 
             if (!comment) {
                 return res.status(404).send()
@@ -59,7 +60,7 @@ router.route('/comments/:comment_id')
 
     .delete(auth, async (req, res) => {
         try {
-            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id })
+            const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id }).populate('author', 'name')
 
             if(!comment) {
                 res.status(404).send()

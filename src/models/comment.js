@@ -14,12 +14,10 @@ const commentSchema = new mongoose.Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'User'
     },
     dish_id: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Dish'
     }
 }, {
@@ -30,12 +28,6 @@ const commentSchema = new mongoose.Schema({
 commentSchema.methods.toJSON = function () {
     const comment = this
     const commentObject = comment.toObject()
-
-    if (commentObject.author.name) {
-        commentObject.author = commentObject.author.name
-    } else {
-        delete commentObject.author
-    }
 
     delete commentObject.dish_id
 

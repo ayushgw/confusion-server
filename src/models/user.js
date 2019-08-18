@@ -52,7 +52,8 @@ const userSchema = mongoose.Schema({
         default: false
     }
 }, {
-        timestamps: true
+        timestamps: true,
+        strict: true
     })
 
 // Remove sensitve data
@@ -62,6 +63,7 @@ userSchema.methods.toJSON = function() {
 
     delete userObject.password
     delete userObject.tokens
+    delete userObject.admin
 
     return userObject
 }
@@ -101,6 +103,15 @@ userSchema.pre('save', async function (next) {
     if(user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+
+    next()
+})
+
+// Delete associated comments when user is removed
+userSchema.pre('remove', async function(next) {
+    const user = this
+
+    await Comment.deleteMany({ author: user._id })
 
     next()
 })
