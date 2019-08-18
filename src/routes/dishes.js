@@ -1,6 +1,7 @@
 const express = require('express');
 const Dish = require('../models/dish')
 const auth = require('../middleware/auth')
+const admin = require('../middleware/admin')
 
 const router = new express.Router();
 
@@ -15,7 +16,7 @@ router.route('/dishes')
         }
     })
 
-    .post(auth, async (req, res) => {
+    .post(auth, admin, async (req, res) => {
         const dish = new Dish(req.body)
         try {
             await dish.save()
@@ -29,7 +30,7 @@ router.route('/dishes')
         res.status(405).send();
     })
 
-    .delete(auth, async (req, res) => {
+    .delete(auth, admin, async (req, res) => {
         try {
             await Dish.deleteMany()
             res.send('Removed all the dishes!')
@@ -58,7 +59,7 @@ router.route('/dishes/:id')
         res.status(405).send()
     })
 
-    .patch(auth, async (req, res) => {
+    .patch(auth, admin, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'category', 'label', 'price', 'featured']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -78,7 +79,7 @@ router.route('/dishes/:id')
         }
     })
 
-    .delete(auth, async (req, res) => {
+    .delete(auth, admin, async (req, res) => {
         try {
             const dish = await Dish.findById(req.params.id)
 

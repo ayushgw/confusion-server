@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 const admin = (req, res, next) => {
     try {
         const isAdmin = req.user.admin
@@ -6,7 +8,7 @@ const admin = (req, res, next) => {
             throw new Error()
         }
 
-        console.log('Admin Access');
+        console.log(chalk.blue.bgRed.bold('Admin Access'));
 
         next()
 

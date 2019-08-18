@@ -1,5 +1,8 @@
 extends layout
 
 block content
-  h1= title
+  h3= title
   p Welcome to #{title}
+  - for (var i = 0; i < #{operations.length}; ++i) {
+  li= #{operatons[i]}
+- }

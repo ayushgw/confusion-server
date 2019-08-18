@@ -1,6 +1,7 @@
 const express = require('express');
 const Leader = require('../models/leader')
 const auth = require('../middleware/auth')
+const admin = require('../middleware/admin')
 
 const router = new express.Router();
 
@@ -15,7 +16,7 @@ router.route('/leaders')
         }
     })
 
-    .post(auth, async (req, res) => {
+    .post(auth, admin, async (req, res) => {
         const leader = new Leader(req.body)
         try {
             await leader.save()
@@ -29,10 +30,10 @@ router.route('/leaders')
         res.status(405).send();
     })
 
-    .delete(auth, async (req, res) => {
+    .delete(auth, admin, async (req, res) => {
         try {
             await Leader.deleteMany()
-            res.send('Removed all the leaders!')
+            res.send([])
         } catch (e) {
             res.status(500).send(e)
         }
@@ -58,7 +59,7 @@ router.route('/leaders/:id')
         res.status(405).send()
     })
 
-    .patch(auth, async (req, res) => {
+    .patch(auth, admin, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'designation', 'abbr']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -83,7 +84,7 @@ router.route('/leaders/:id')
         }
     })
 
-    .delete(auth, async (req, res) => {
+    .delete(auth, admin, async (req, res) => {
         try {
             const leader = await Leader.findById(req.params.id)
 
