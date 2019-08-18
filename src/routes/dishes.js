@@ -2,12 +2,14 @@ const express = require('express');
 const Dish = require('../models/dish')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const { cors, corsWithOptions } = require('../middleware/cors')
 
 const router = new express.Router();
 
 router.route('/dishes')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const dishes = await Dish.find({})
             res.send(dishes);
@@ -16,7 +18,7 @@ router.route('/dishes')
         }
     })
 
-    .post(auth, admin, async (req, res) => {
+    .post(corsWithOptions, auth, admin, async (req, res) => {
         const dish = new Dish(req.body)
         try {
             await dish.save()
@@ -26,11 +28,11 @@ router.route('/dishes')
         }
     })
 
-    .patch((req, res) => {
+    .patch(corsWithOptions, (req, res) => {
         res.status(405).send();
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             await Dish.deleteMany()
             res.send('Removed all the dishes!')
@@ -41,7 +43,8 @@ router.route('/dishes')
 
 router.route('/dishes/:id')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const dish = await Dish.findById(req.params.id)
 
@@ -55,11 +58,11 @@ router.route('/dishes/:id')
         }
     })
 
-    .post((req, res) => {
+    .post(corsWithOptions, (req, res) => {
         res.status(405).send()
     })
 
-    .patch(auth, admin, async (req, res) => {
+    .patch(corsWithOptions, auth, admin, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'category', 'label', 'price', 'featured']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -79,7 +82,7 @@ router.route('/dishes/:id')
         }
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             const dish = await Dish.findById(req.params.id)
 

@@ -3,6 +3,7 @@ extends layout
 block content
   h3= title
   p Welcome to #{title}
-  - for (var i = 0; i < #{operations.length}; ++i) {
-  li= #{operatons[i]}
-- }
+  ul
+    li #{operations[0]} &mdash; to bulk add dishes
+    li #{operations[0]} &mdash; to bulk add leaders
+    li #{operations[0]} &mdash; to bulk add promos

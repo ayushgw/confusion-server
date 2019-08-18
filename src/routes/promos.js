@@ -2,12 +2,14 @@ const express = require('express');
 const Promo = require('../models/promo')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const { cors, corsWithOptions } = require('../middleware/cors')
 
 const router = new express.Router();
 
 router.route('/promos')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const promos = await Promo.find({})
             res.send(promos);
@@ -16,7 +18,7 @@ router.route('/promos')
         }
     })
 
-    .post(auth, admin, async (req, res) => {
+    .post(corsWithOptions, auth, admin, async (req, res) => {
         const promo = new Promo(req.body)
         try {
             await promo.save()
@@ -26,11 +28,11 @@ router.route('/promos')
         }
     })
 
-    .patch((req, res) => {
+    .patch(corsWithOptions, (req, res) => {
         res.status(405).send();
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             await Promo.deleteMany()
             res.send('Removed all the promos!')
@@ -41,7 +43,8 @@ router.route('/promos')
 
 router.route('/promos/:id')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const promo = await Promo.findById(req.params.id)
 
@@ -55,11 +58,11 @@ router.route('/promos/:id')
         }
     })
 
-    .post((req, res) => {
+    .post(corsWithOptions, (req, res) => {
         res.status(405).send()
     })
 
-    .patch(auth, admin, async (req, res) => {
+    .patch(corsWithOptions, auth, admin, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'label', 'price']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -71,10 +74,10 @@ router.route('/promos/:id')
         try {
             const promo = await Promo.findById(req.params.id)
 
-            if(!promo) {
+            if (!promo) {
                 return res.status(404).send()
             }
-            
+
             updates.forEach(update => promo[update] = req.body[update])
             await promo.save()
 
@@ -84,7 +87,7 @@ router.route('/promos/:id')
         }
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             const promo = await Promo.findById(req.params.id)
 

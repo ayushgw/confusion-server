@@ -1,10 +1,11 @@
 const express = require('express');
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const { corsWithOptions } = require('../middleware/cors')
 
 const router = new express.Router();
 
-router.post('/users', async (req, res) => {
+router.post('/users', corsWithOptions, async (req, res) => {
   const user = new User({ 
     ...req.body,
     admin: false
@@ -20,7 +21,7 @@ router.post('/users', async (req, res) => {
   }
 })
 
-router.post('/users/login', async (req, res) => {
+router.post('/users/login', corsWithOptions, async (req, res) => {
   try {
     // findByCredentials defined on userSchema
     const user = await User.findByCredentials(req.body.email, req.body.password)
@@ -31,7 +32,7 @@ router.post('/users/login', async (req, res) => {
   }
 })
 
-router.post('/users/logout', auth, async (req, res) => {
+router.post('/users/logout', corsWithOptions, auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter(token => req.token !== token)
 
@@ -43,7 +44,7 @@ router.post('/users/logout', auth, async (req, res) => {
   }
 })
 
-router.get('/users/me', auth, async (req, res) => {
+router.get('/users/me', corsWithOptions, auth, async (req, res) => {
   res.send(req.user)
 })
 

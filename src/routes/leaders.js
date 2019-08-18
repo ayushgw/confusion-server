@@ -2,12 +2,14 @@ const express = require('express');
 const Leader = require('../models/leader')
 const auth = require('../middleware/auth')
 const admin = require('../middleware/admin')
+const { cors, corsWithOptions } = require('../middleware/cors')
 
 const router = new express.Router();
 
 router.route('/leaders')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const leaders = await Leader.find({})
             res.send(leaders);
@@ -16,7 +18,7 @@ router.route('/leaders')
         }
     })
 
-    .post(auth, admin, async (req, res) => {
+    .post(corsWithOptions, auth, admin, async (req, res) => {
         const leader = new Leader(req.body)
         try {
             await leader.save()
@@ -26,11 +28,11 @@ router.route('/leaders')
         }
     })
 
-    .patch((req, res) => {
+    .patch(corsWithOptions, (req, res) => {
         res.status(405).send();
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             await Leader.deleteMany()
             res.send([])
@@ -41,7 +43,8 @@ router.route('/leaders')
 
 router.route('/leaders/:id')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const leader = await Leader.findById(req.params.id)
 
@@ -55,11 +58,11 @@ router.route('/leaders/:id')
         }
     })
 
-    .post((req, res) => {
+    .post(corsWithOptions, (req, res) => {
         res.status(405).send()
     })
 
-    .patch(auth, admin, async (req, res) => {
+    .patch(corsWithOptions, auth, admin, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['name', 'description', 'image', 'designation', 'abbr']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -71,7 +74,7 @@ router.route('/leaders/:id')
         try {
             const leader = await Leader.findById(req.params.id)
 
-            if(!leader) {
+            if (!leader) {
                 return res.status(404).send()
             }
 
@@ -84,7 +87,7 @@ router.route('/leaders/:id')
         }
     })
 
-    .delete(auth, admin, async (req, res) => {
+    .delete(corsWithOptions, auth, admin, async (req, res) => {
         try {
             const leader = await Leader.findById(req.params.id)
 

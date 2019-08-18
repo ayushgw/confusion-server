@@ -1,12 +1,14 @@
 const express = require('express')
 const Comment = require('../models/comment')
 const auth = require('../middleware/auth')
+const { cors, corsWithOptions } = require('../middleware/cors')
 
 const router = new express.Router()
 
 router.route('/dishes/:dish_id/comments')
 
-    .get(async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .get(cors, async (req, res) => {
         try {
             const comments = await Comment.find({ dish_id: req.params.dish_id }).populate('author', 'name')
             res.send(comments)
@@ -15,7 +17,7 @@ router.route('/dishes/:dish_id/comments')
         }
     })
 
-    .post(auth, async (req, res) => {
+    .post(corsWithOptions, auth, async (req, res) => {
         const comment = new Comment({
             ...req.body,
             dish_id: req.params.dish_id,
@@ -33,7 +35,8 @@ router.route('/dishes/:dish_id/comments')
 
 router.route('/comments/:comment_id')
 
-    .patch(auth, async (req, res) => {
+    .options(corsWithOptions, (req, res) => res.status(200).send())
+    .patch(corsWithOptions, auth, async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['rating', 'comment']
         const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -58,11 +61,11 @@ router.route('/comments/:comment_id')
         }
     })
 
-    .delete(auth, async (req, res) => {
+    .delete(corsWithOptions, auth, async (req, res) => {
         try {
             const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id }).populate('author', 'name')
 
-            if(!comment) {
+            if (!comment) {
                 res.status(404).send()
             }
 
