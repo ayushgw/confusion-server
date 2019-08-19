@@ -1,9 +1,38 @@
 extends layout
 
 block content
-  h3= title
-  p Welcome to #{title}
+  h1= title
+
+  p Facebook login demo
+  button#facebook(onclick='loginWithFacebook()') Login with facebook
+
+  br
+
+  p Bulk add apis reference
   ul
     li #{operations[0]} &mdash; to bulk add dishes
     li #{operations[0]} &mdash; to bulk add leaders
     li #{operations[0]} &mdash; to bulk add promos
+
+
+  script.
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '430835600863291',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v4.0'
+      });
+        
+      FB.AppEvents.logPageView();   
+      };
+
+    (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+  script(src="/javascripts/facebook.js")

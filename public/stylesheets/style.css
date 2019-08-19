@@ -1,8 +1,22 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 30rem;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: rgb(232, 234, 235)
 }
 
 a {
   color: #00B7FF;
+}
+
+#facebook {
+  cursor: pointer;
+  border: 1px solid #888888;
+  background: #405bf1;
+  color: white;
+  padding: 8px;
+  font-size: large;
 }

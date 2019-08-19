@@ -13,10 +13,10 @@ router.route('/')
 
   .options(corsWithOptions, (req, res) => res.status(200).send())
 
-  .get(cors, auth, admin, (req, res) => {
+  .get(cors, (req, res) => {
     const ops = ['/addDishes', '/addLeaders', '/addPromos']
     res.render('index', {
-      title: 'Admin apis reference',
+      title: 'ConFusion Node.js Server',
       operations: ops
     })
   })
