@@ -2,7 +2,8 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
-const whitelist = ['http://localhost:3000', 'http://example2.com'] // list all the accepted hosts
+// list all the accepted hosts
+const whitelist = ['http://localhost:3000', 'https://graph.facebook.com', 'http://example2.com'] 
 
 const corsOptionsDelegate = function (req, callback) {
     let corsOptions;
