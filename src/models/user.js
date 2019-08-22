@@ -62,6 +62,13 @@ const userSchema = mongoose.Schema({
         strict: true
     })
 
+// Add favourite virtual property
+userSchema.virtual('favourites', {
+    ref: 'Favourite',
+    localField: '_id',
+    foreignField: 'user'
+})
+
 // Remove sensitve data
 userSchema.methods.toJSON = function () {
     const user = this
