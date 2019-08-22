@@ -3,6 +3,9 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const fetch = require('node-fetch')
+const Comment = require('../models/comment')
+const Favourite = require('../models/favourite')
+
 
 const userSchema = mongoose.Schema({
     name: {
@@ -142,6 +145,7 @@ userSchema.pre('remove', async function (next) {
     const user = this
 
     await Comment.deleteMany({ author: user._id })
+    await Favourite.deleteMany({ user: user._id })
 
     next()
 })
