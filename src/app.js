@@ -34,7 +34,4 @@ app.use(leaderRouter)
 app.use(favouriteRouter)
 
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log(`Server is up at ${port}`);
-})
+module.exports = app

@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "env-cmd -f ./config/dev.env nodemon ./src/app.js"
+    "dev": "env-cmd -f ./config/dev.env nodemon ./src/index.js",
+    "test": "env-cmd -f ./config/test.env jest --watch"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -24,6 +28,8 @@
     "validator": "^11.1.0"
   },
   "devDependencies": {
-    "env-cmd": "^9.0.3"
+    "env-cmd": "^9.0.3",
+    "jest": "^24.9.0",
+    "supertest": "^4.0.2"
   }
 }
