@@ -41,13 +41,6 @@ const dishSchema = new mongoose.Schema({
     timestamps: true
 })
 
-// Virtual reference to dish-related comments
-// dishSchema.virtual('comments', {
-//     ref: 'Comment',
-//     localField: '_id',
-//     foreignField: 'dish_id'
-// })
-
 // Delete associated comments when dish is removed
 dishSchema.pre('remove', async function(next) {
     const dish = this
