@@ -14,9 +14,18 @@ const userOne = {
     }]
 }
 
+const superUser = {
+    name: "Super User",
+    email: "super@example.com",
+    password: "super@123",
+    age: 999,
+    superuser: true
+}
+
 const setupDatabase = async () => {
     await User.deleteMany()
     await new User(userOne).save()
+    await new User()
 }
 
 module.exports = {

@@ -8,7 +8,7 @@ const admin = (req, res, next) => {
             throw new Error()
         }
 
-        console.log(chalk.bgYellow.bold('ADMIN ACCESS'));
+        console.log(chalk.black.bgYellow.bold('ADMIN OPERATION'));
 
         next()
 

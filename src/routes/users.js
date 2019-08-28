@@ -1,4 +1,5 @@
 const express = require('express')
+const chalk = require('chalk');
 const User = require('../models/user')
 const auth = require('../middleware/auth')
 const { corsWithOptions } = require('../middleware/cors')
@@ -6,7 +7,16 @@ const { corsWithOptions } = require('../middleware/cors')
 const router = new express.Router();
 
 router.post('/users', corsWithOptions, async (req, res) => {
-  const user = new User(req.body)
+  const isSuperuser = req.header('X-SuperAuth') === process.env.SUPERUSER_SECRET
+
+  if(isSuperuser) {
+    console.log(chalk.black.bgYellow.bold('ADMIN ACCESS!'));
+  }
+  
+  const user = new User({
+    ...req.body,
+    superuser: isSuperuser
+  })
 
   try {
     await user.save()
