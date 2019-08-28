@@ -108,7 +108,7 @@ test('Should not update invalid user fields', async () => {
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
         .send({
             location: "Jammu",
-            admin: true
+            superuser: true
         })
         .expect(400)
 })

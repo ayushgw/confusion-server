@@ -2,7 +2,7 @@ const chalk = require('chalk');
 
 const admin = (req, res, next) => {
     try {
-        const isAdmin = req.user.admin
+        const isAdmin = req.user.superuser
 
         if(!isAdmin) {
             throw new Error()

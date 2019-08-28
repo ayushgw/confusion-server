@@ -56,7 +56,7 @@ const userSchema = mongoose.Schema({
             required: true
         }
     }],
-    admin: {
+    superuser: {
         type: Boolean,
         default: false
     }
@@ -79,7 +79,7 @@ userSchema.methods.toJSON = function () {
 
     delete userObject.password
     delete userObject.tokens
-    delete userObject.admin
+    delete userObject.superuser
     delete userObject.facebookId
     delete userObject.facebookToken
 

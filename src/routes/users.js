@@ -6,10 +6,7 @@ const { corsWithOptions } = require('../middleware/cors')
 const router = new express.Router();
 
 router.post('/users', corsWithOptions, async (req, res) => {
-  const user = new User({
-    ...req.body,
-    admin: false
-  })
+  const user = new User(req.body)
 
   try {
     await user.save()
@@ -53,7 +50,6 @@ router.post('/users/login', corsWithOptions, async (req, res) => {
         // Create new user
         user = new User({
           ...req.body,
-          admin: false,
           loginMethod: 'facebook'
         })
 
