@@ -101,3 +101,26 @@ test('Should update leader for admin user', async () => {
     expect(leader.description).toBe("Description has been updated successfully")
 })
 
+test('Should delete leader for admin user', async () => {
+    const response = await request(app)
+        .delete(`/leaders/${leaderOneId}`)
+        .set('Authorization', `Bearer ${superUser.tokens[0].token}`)
+        .set('X-SuperAuth', process.env.SUPERUSER_SECRET)
+        .send()
+        .expect(200)
+
+    const leader = await Leader.findById(leaderOneId)
+    expect(leader).toBeNull()
+})
+
+test('Should delete all leaders for admin user', async () => {
+    const response = await request(app)
+        .delete(`/leaders`)
+        .set('Authorization', `Bearer ${superUser.tokens[0].token}`)
+        .set('X-SuperAuth', process.env.SUPERUSER_SECRET)
+        .send()
+        .expect(200)
+
+    const leaders = await Leader.find()
+    expect(leaders).toStrictEqual([])
+})
