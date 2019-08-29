@@ -1,23 +1,22 @@
 const request = require('supertest')
 const app = require('../src/app')
-const Dish = require('../src/models/dish')
 
 const { userOne, setupDatabase } = require('./fixtures/db')
 const { dishOneId, setupDishes } = require('./fixtures/dish')
 
-beforeEach(setupDatabase)
-beforeEach(setupDishes)
+beforeAll(setupDatabase)
+beforeAll(setupDishes)
 
 test('Should not create dish for non admin user', async () => {
     await request(app)
         .post('/dishes')
         .set('Authoriation', `Bearer ${userOne.tokens[0].token}`)
         .send({
-            name: "Genthuk",
-            description: "Thenthuk with ginger base",
-            category: "Tibetan",
+            name: "Japanese ramen noodle soup",
+            category: "Japanese",
             image: "no image",
-            price: "$4.99"
+            price: "$8.99",
+            description: "Use chicken, noodles, spinach, sweetcorn and eggs to make this moreish Japanese noodle soup, for when you crave something comforting yet light and wholesome"
         })
         .expect(401)
 })
