@@ -66,7 +66,7 @@ router.route('/comments/:comment_id')
             const comment = await Comment.findOne({ _id: req.params.comment_id, author: req.user._id }).populate('author', 'name')
 
             if (!comment) {
-                res.status(404).send()
+                return res.status(404).send()
             }
 
             await comment.remove()
