@@ -31,7 +31,7 @@ test('Should fetch all dishes', async () => {
     expect(response.body.length).toBe(2)
 })
 
-test('Should not delete dish for non admin user', async () => {
+test('Should not delete dishes for non admin user', async () => {
     await request(app)
         .delete('/dishes')
         .set('Authoriation', `Bearer ${userOne.tokens[0].token}`)
@@ -54,7 +54,7 @@ test('Should not update dish for non admin user', async () => {
         .patch(`/dishes/${dishOneId}`)
         .set('Authoriation', `Bearer ${userOne.tokens[0].token}`)
         .send({
-            name: "Changed"
+            name: "Changed dish"
         })
         .expect(401)
 })
