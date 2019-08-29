@@ -1,7 +1,9 @@
-// const { superUserId, superUser } = require('./db')
+const mongoose = require('mongoose')
 const Dish = require('../../src/models/dish')
 
+const dishOneId = new mongoose.Types.ObjectId()
 const dishOne = {
+    _id: dishOneId,
     name: "Genthuk",
     image: "no image",
     category: "Tibetan",
@@ -24,5 +26,6 @@ const setupDishes = async () => {
 }
 
 module.exports = {
+    dishOneId,
     setupDishes
 }
